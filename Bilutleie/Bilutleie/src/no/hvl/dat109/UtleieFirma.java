@@ -11,6 +11,36 @@ public class UtleieFirma {
 		this.adresse = adresse;
 		this.telefonNum = telefonNum;
 	}
+
+
+	public String getFirmaNavn() {
+		return firmaNavn;
+	}
+
+
+	public void setFirmaNavn(String firmaNavn) {
+		this.firmaNavn = firmaNavn;
+	}
+
+
+	public String getAdresse() {
+		return adresse;
+	}
+
+
+	public void setAdresse(String adresse) {
+		this.adresse = adresse;
+	}
+
+
+	public String getTelefonNum() {
+		return telefonNum;
+	}
+
+
+	public void setTelefonNum(String telefonNum) {
+		this.telefonNum = telefonNum;
+	}
 	
 	
 }

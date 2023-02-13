@@ -58,57 +58,40 @@ public class UtleieKontor {
 	
 	public void logginn() {
 		Scanner scanner = new Scanner(System.in);
-		
-		while(true) {
-		System.out.println("Skriv 1 for å logge inn, skriv 2 for å registrere bruker: ");
-		int innlogg = scanner.nextInt();
-		
-		if(innlogg == 1 || innlogg == 2) {
-			if(innlogg == 1) {
-				System.out.println("Skriv inn telefonnummer for å logge inn.");
-				String telefonnummer = scanner.nextLine();
-				
 
-				if(kunder.stream().filter(k -> k.getTelefonNum().equals(telefonnummer)).findFirst().isPresent()) {
-					innlogget((kunder.stream().filter(k -> k.getTelefonNum().equals(telefonnummer)).findFirst().get()), scanner);
+		while (true) {
+			System.out.println("Skriv 1 for å logge inn, skriv 2 for å registrere bruker: ");
+			int innlogg = scanner.nextInt();
 
+			if (innlogg == 1 || innlogg == 2) {
+				if (innlogg == 1) {
+					System.out.println("Skriv inn telefonnummer for å logge inn.");
+					String telefonnummer = scanner.nextLine();
+
+					if (kunder.stream().filter(k -> k.getTelefonNum().equals(telefonnummer)).findFirst().isPresent()) {
+						innlogget((kunder.stream().filter(k -> k.getTelefonNum().equals(telefonnummer)).findFirst()
+								.get()), scanner);
+					}
 				}
-				
-				
-				
-			} 
-			
-			if (innlogg == 2) {
-				Kunde kunde = registrerKunde(scanner);
-				
-				if(kunde != null) { 
-				innlogget(kunde, scanner);
-				} 
-			} else {
-				System.out.println("Skriv inn riktig nummer!");
+
+				if (innlogg == 2) {
+					Kunde kunde = registrerKunde(scanner);
+
+					if (kunde != null) {
+						innlogget(kunde, scanner);
+					}
+				} else {
+					System.out.println("Skriv inn riktig nummer!");
+				}
 			}
 		}
-			
-		
-		} 
-		
-		
-		
-//		if(telefonnummer.equals(kunder))
-//		
-//		System.out.println("Skriv inn passord: ");
-//		String passord = scanner.nextLine();
-//		
-//		boolean innloggingVellykket = false; 
-//		
-//		if(brukernavn.equals(innlogginfo[]))
-		
 	}
   	
 	public Boolean leiBil(Kunde kunde, String regNum) {
         Bil bil = finnBil(regNum);
         if(bil != null && bil.getLeidAv() == null) {
             bil.setLeidAv(kunde);
+            //fjernBil(bil.getRegNum());
             return true;
         }
         else {
@@ -117,25 +100,31 @@ public class UtleieKontor {
         }
     }
 	
-	public Bil finnBil(String regNum) {
-        Bil bil = ledigeBiler.stream().filter(b -> b.getRegNum() == regNum).findFirst().get();
-        return bil;
-
-    }
+	public Bil finnBil(String regNr) {
+		for (Bil bil : ledigeBiler) {
+			if (regNr.equals(bil.getRegNum()))
+				return bil;
+		}
+		return null;
+	}
 	
 	public void printLedigBil() {
         ledigeBiler.stream().filter(b -> b.getLeidAv() == null).forEach(System.out::println);
     }
 	
-	public void leverBil(String regNr, Kunde kunde) {
-        Bil bil = finnBil(regNr);
-        if(bil != null) {
-            if(kunde == bil.getLeidAv()) {
-                bil.setLeidAv(null);
-                System.out.println("Bilen: " + bil.toString() + " er nå levert.");
-            } else System.err.println("Finner ikke bil registrert til deg med dette registererings nummeret.");
-            } else System.err.println("Finner ikke bil med dette registerings nummeret.");
-    }
+	public void leverBil(String regNum, Kunde kunde) {
+		Bil bil = finnBil(regNum);
+		if (bil != null) {
+			if (kunde == bil.getLeidAv()) {
+				bil.setLeidAv(null);
+				//leggTilBil(bil);
+				System.out.println(
+						"Bilen: " + bil.toString() + " er nå levert og prisen ble: " + bil.getBilGruppe().getPris());
+			} else
+				System.err.println("Finner ikke bil registrert til deg med dette registererings nummeret.");
+		} else
+			System.err.println("Finner ikke bil med dette registerings nummeret.");
+	}
 	
 	private void innlogget(Kunde kunde, Scanner scanner) {
 		
@@ -152,10 +141,12 @@ public class UtleieKontor {
 				System.out.println("Skriv regNr på bilen du ønsker å leie.");
 				String regNr = scanner.next();
 				leiBil(kunde, regNr);
+				System.out.println("Takk for at du valgte å leie hos " + firma.getFirmaNavn());
 				break;
 			}
 
 			case 2: {
+				System.out.println("");
 				printLedigBil();
 				break;
 			}
@@ -177,6 +168,13 @@ public class UtleieKontor {
 
 		}
 
+	}
+	
+	public Boolean erBilOpptatt(Bil bil) {
+		if(bil.getLeidAv() != null) {
+			return true;
+		}
+		return false;
 	}
 	
 

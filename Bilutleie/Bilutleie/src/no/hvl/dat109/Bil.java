@@ -73,6 +73,12 @@ public class Bil {
 	public void setBilGruppe(UtleierGruppe bilGruppe) {
 		this.bilGruppe = bilGruppe;
 	}
+
+	@Override
+	public String toString() {
+		return "Bil [regNum=" + regNum + ", merke=" + merke + ", modell=" + modell + ", farge=" + farge + ", bilGruppe="
+				+ bilGruppe + ", leidAv=" + leidAv + "]";
+	}
 	
 	
 	
